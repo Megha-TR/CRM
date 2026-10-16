@@ -34,7 +34,7 @@ Get a key from [Google AI Studio](https://aistudio.google.com/apikey). Gemini us
 
 OpenAI remains supported: set `AI_PROVIDER='openai'`, `OPENAI_API_KEY`, and optionally `OPENAI_MODEL` (default `gpt-4.1-mini`). It uses the Responses API with structured output. If `AI_PROVIDER` is omitted or `auto`, a nonempty Gemini key takes priority, then OpenAI. Explicit provider selection never silently switches to another paid provider.
 
-AI mode sends the selected lead and conversation to the selected provider. Seed creation deliberately uses local rules to avoid 25 API calls; use **Re-analyze this lead** to get an AI decision for a seeded lead. Added leads and chats are analyzed automatically. A live OpenAI request was rejected for exhausted credits. Gemini success is tested with mocked structured responses; a live Gemini request still needs a configured key and verification.
+AI mode sends the selected lead and conversation to the selected provider. Seed creation deliberately uses local rules to avoid 25 API calls; use **Re-analyze this lead** to get an AI decision for a seeded lead. Added leads and chats are analyzed automatically. Live Gemini inference has been verified with fictional sample leads, including re-analysis through the running app. The automated suite additionally tests structured responses and failure handling without consuming API quota.
 
 If AI times out, is blocked, or fails validation, the app persists a local decision and shows a warning. Calls have a 20-second timeout and no retries. No paid call occurs on routine screen reruns or draft edits.
 
@@ -78,4 +78,4 @@ Database: `data/crm.db` (created automatically and excluded from Git). Set `CRM_
 
 SQLite is simpler here than Google Sheets: no service account, spreadsheet sharing, or network dependency, and chat plus follow-up updates can be atomic. Google Sheets is suitable for shared spreadsheet viewing, but adds integration work for this app. For hosted multi-instance production use, move to managed Postgres; SQLite needs a persistent disk and a single app instance. Ephemeral hosting may discard local files.
 
-The brief's short submission note is in `SUBMISSION_NOTE.md`; read and personalize it before sending. The brief also requires a live link, visible GitHub repo, and video. Repository publishing is now authorized; deployment and the video remain outstanding. No email has been sent.
+The brief's short submission note is in `SUBMISSION_NOTE.md`; read and personalize it before sending. The brief also requires a live link, visible GitHub repo, and video. Repository publishing is now authorized; deployment and the video remain outstanding. See DEPLOYMENT.md for the free Community Cloud setup and its storage limitation. No email has been sent.
