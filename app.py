@@ -1,7 +1,7 @@
 import csv
 import io
 import os
-from datetime import date
+from datetime import date, datetime
 import streamlit as st
 from agent import today, provider_settings
 from sample_data import REPS
@@ -26,6 +26,10 @@ h1{letter-spacing:-1.5px} .stButton>button{border-radius:8px}
 
 
 COLORS = {'Hot': '🔴', 'Warm': '🟡', 'Cold': '🔵'}
+
+
+def display_date(value):
+    return date.fromisoformat(value[:10]).strftime('%d/%m/%Y')
 
 
 def temperature_badge(tag):
@@ -67,7 +71,7 @@ with st.sidebar:
     st.caption('Demo data is fictional. No messages are actually sent.')
 
 st.title('Your next conversation starts here.')
-st.caption(f'{today().strftime("%A, %d %B %Y")} · Follow up with the right buyer, at the right time.')
+st.caption(f'{today().strftime("%A, %d/%m/%Y")} · Follow up with the right buyer, at the right time.')
 if 'notice' in st.session_state:
     st.success(st.session_state.pop('notice'))
 leads = store.all_leads()
@@ -111,7 +115,7 @@ with st.expander('＋ Add a new lead'):
         phone = a.text_input('Phone *', max_chars=30)
         source = b.selectbox('Source', ['WhatsApp', 'Excel', 'Referral', 'Website', 'Other'])
         owner = a.selectbox('Assigned rep', REPS)
-        last_contact = b.date_input('Last contact date', max_value=today())
+        last_contact = b.date_input('Last contact date', max_value=today(), format='DD/MM/YYYY')
         initial = st.text_area('Initial buyer message (optional)', max_chars=5000)
         if st.form_submit_button('Create lead & run agent', type='primary'):
             digits = ''.join(c for c in phone if c.isdigit())
@@ -137,11 +141,11 @@ with queue:
                 if item['paused']:
                     st.warning('OUTREACH PAUSED')
                 elif overdue > 0:
-                    st.error(f'OVERDUE · {overdue} day{"s" if overdue != 1 else ""} · {item["next_followup"]}', icon='⚠️')
+                    st.error(f'OVERDUE · {overdue} day{"s" if overdue != 1 else ""} · {display_date(item["next_followup"])}', icon='⚠️')
                 elif overdue == 0:
                     st.info('DUE TODAY', icon='🕒')
                 else:
-                    st.caption(f'UPCOMING · {item["next_followup"]}')
+                    st.caption(f'UPCOMING · {display_date(item["next_followup"])}')
                 st.markdown(f'**{item["name"]} · {item["company"]}**')
                 temperature_badge(item['tag'])
                 st.caption(f'{item["rep"]} · {item["source"]}')
@@ -151,7 +155,7 @@ with queue:
                     st.rerun()
         with st.expander('Lead directory · upcoming & paused' if view == 'Due now' else 'Lead directory · current view', expanded=not visible):
             for item in sorted(directory, key=lambda l: (l['paused'], l['next_followup'])):
-                state = 'Paused' if item['paused'] else f'Due {item["next_followup"]}'
+                state = 'Paused' if item['paused'] else f'Due {display_date(item["next_followup"])}'
                 if st.button(f'{item["name"]} · {item["company"]} | {COLORS[item["tag"]]} {item["tag"]} | {state}', key=f'all_{item["id"]}', use_container_width=True):
                     st.session_state['selected_id'] = item['id']
                     st.rerun()
@@ -170,10 +174,10 @@ with detail:
         lead, chats = store.get_lead(selected)
         st.markdown(f'### {lead["name"]}')
         st.write(f'{lead["company"]} · {lead["phone"]}')
-        st.caption(f'Owner: {lead["rep"]} · Source: {lead["source"]} · Last contact: {lead["last_contact"]}')
+        st.caption(f'Owner: {lead["rep"]} · Source: {lead["source"]} · Last contact: {display_date(lead["last_contact"])}')
         temperature_badge(lead['tag'])
         st.write(lead['reason'])
-        st.caption(f'Next follow-up: {lead["next_followup"]} · Decision: {lead["engine"]}')
+        st.caption(f'Next follow-up: {display_date(lead["next_followup"])} · Decision: {lead["engine"]}')
         if lead['warning']:
             st.warning(lead['warning'])
         if lead['paused']:
@@ -183,7 +187,7 @@ with detail:
                 st.caption('No conversation yet. Add a buyer message to give the agent more context.')
             for chat in chats:
                 with st.chat_message('user' if chat['sender'] == 'Buyer' else 'assistant'):
-                    st.caption(f'{chat["sender"]} · {chat["created_at"][:16].replace("T", " ")}')
+                    st.caption(f'{chat["sender"]} · {datetime.fromisoformat(chat["created_at"]).strftime("%d/%m/%Y %H:%M")}')
                     st.write(chat['body'])
         with st.form(f'draft_{selected}_{lead["revision"]}'):
             draft = st.text_area('Next follow-up message', value=lead['draft'], height=130, disabled=bool(lead['paused']), max_chars=1500)
@@ -198,7 +202,7 @@ with detail:
         with st.expander('Add a chat message'):
             with st.form(f'chat_{selected}', clear_on_submit=True):
                 sender = st.selectbox('Sender', ['Buyer', 'Rep'])
-                contact = st.date_input('Message date', value=today(), max_value=today())
+                contact = st.date_input('Message date', value=today(), max_value=today(), format='DD/MM/YYYY')
                 body = st.text_area('Message', max_chars=5000)
                 if st.form_submit_button('Add chat & update agent', type='primary'):
                     with st.spinner('Updating this lead…'):
