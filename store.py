@@ -33,6 +33,7 @@ def connect():
 def initialize():
     with connect() as con:
         con.executescript('''
+        CREATE TABLE IF NOT EXISTS app_metadata (key TEXT PRIMARY KEY, value TEXT NOT NULL);
         CREATE TABLE IF NOT EXISTS leads (
             id INTEGER PRIMARY KEY, name TEXT NOT NULL, company TEXT NOT NULL,
             phone TEXT NOT NULL, source TEXT NOT NULL, rep TEXT NOT NULL, last_contact TEXT NOT NULL,
@@ -45,13 +46,14 @@ def initialize():
             sender TEXT NOT NULL CHECK(sender IN ('Rep','Buyer')), body TEXT NOT NULL,
             created_at TEXT NOT NULL);
         ''')
-        if con.execute('SELECT COUNT(*) FROM leads').fetchone()[0] == 0:
+        if not con.execute("SELECT 1 FROM app_metadata WHERE key='seeded'").fetchone() and con.execute('SELECT COUNT(*) FROM leads').fetchone()[0] == 0:
             from agent import local_decision
             for lead, chats in records(today()):
                 lead_id = insert_lead(con, lead)
                 for msg in chats:
                     con.execute('INSERT INTO chats(lead_id,sender,body,created_at) VALUES (?,?,?,?)', (lead_id, msg['sender'], msg['body'], msg['created_at']))
                 save_decision(con, lead_id, local_decision(lead, chats), 'Local rules', None)
+        con.execute("INSERT OR IGNORE INTO app_metadata(key,value) VALUES ('seeded','1')")
 
 
 def insert_lead(con, lead):
@@ -124,3 +126,16 @@ def mark_sent(lead_id, draft, revision):
         delay = {'Hot': 2, 'Warm': 7, 'Cold': 14}[lead['tag']]
         due = max(lead['next_followup'], (today() + timedelta(days=delay)).isoformat())
         con.execute('UPDATE leads SET last_contact=?,next_followup=?,draft=?,revision=revision+1 WHERE id=?', (today().isoformat(),due,draft.strip(),lead_id))
+
+
+def delete_lead(lead_id, revision):
+    """Delete the lead and its history atomically; reject stale confirmations."""
+    with connect() as con:
+        con.execute('BEGIN IMMEDIATE')
+        lead = con.execute('SELECT revision FROM leads WHERE id=?', (lead_id,)).fetchone()
+        if lead is None:
+            raise ValueError('This lead has already been deleted. Reload the app.')
+        if lead['revision'] != revision:
+            raise ValueError('Lead changed in another session. Reload before deleting.')
+        con.execute('DELETE FROM chats WHERE lead_id=?', (lead_id,))
+        con.execute('DELETE FROM leads WHERE id=?', (lead_id,))

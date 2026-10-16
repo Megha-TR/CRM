@@ -45,7 +45,8 @@ If AI times out, is blocked, or fails validation, the app persists a local decis
 3. Under **Add a chat message**, add a buyer reply such as `Please schedule a demo tomorrow`. The agent updates only that lead.
 4. Add a new lead using the expander near the top, with an initial buyer message. Clear filters if the assigned rep differs from the current filter.
 5. In **All leads**, open Kiara at DailyHarvest. Her stop request pauses outreach. A subsequent buyer message expressing renewed interest can reactivate the lead.
-6. Restart the app: drafts, new leads, and sent history remain in SQLite. CSV export provides a readable lead snapshot.
+6. To remove a lead, open **Delete lead** in its workspace, read the warning, check the confirmation, and click **Delete lead permanently**. This removes its draft and all messages together.
+7. Restart the app: drafts, new leads, and sent history remain in SQLite. CSV export provides a readable lead snapshot.
 
 ## Dashboard cards and colors
 
@@ -79,3 +80,5 @@ Database: `data/crm.db` (created automatically and excluded from Git). Set `CRM_
 SQLite is simpler here than Google Sheets: no service account, spreadsheet sharing, or network dependency, and chat plus follow-up updates can be atomic. Google Sheets is suitable for shared spreadsheet viewing, but adds integration work for this app. For hosted multi-instance production use, move to managed Postgres; SQLite needs a persistent disk and a single app instance. Ephemeral hosting may discard local files.
 
 The brief's short submission note is in `SUBMISSION_NOTE.md`; read and personalize it before sending. The brief also requires a live link, visible GitHub repo, and video. Repository publishing is now authorized; deployment and the video remain outstanding. See DEPLOYMENT.md for the free Community Cloud setup and its storage limitation. No email has been sent.
+
+A small `app_metadata` table records that initialization has happened. Intentionally deleting the final lead leaves the app empty; it does not re-create sample leads. Deletion rejects stale lead revisions and is permanent.

@@ -211,3 +211,38 @@ def test_gemini_quota_and_missing_key_do_not_switch_providers(monkeypatch):
     monkeypatch.setattr(agent, 'urlopen', quota)
     result, engine, warning = agent.analyze(lead, chats)
     assert engine == 'Local fallback' and 'quota' in warning and 'secret' not in warning
+
+
+def test_delete_removes_only_selected_lead_and_history():
+    lead, _ = store.get_lead(1)
+    with pytest.raises(ValueError, match='changed'):
+        store.delete_lead(1, lead['revision'] - 1)
+    assert len(store.get_lead(1)[1]) == 2
+    store.delete_lead(1, lead['revision'])
+    assert len(store.all_leads()) == 24
+    with store.connect() as con:
+        assert con.execute('SELECT COUNT(*) FROM chats WHERE lead_id=1').fetchone()[0] == 0
+    assert len(store.get_lead(2)[1]) == 2
+    with pytest.raises(ValueError, match='already been deleted'):
+        store.delete_lead(1, lead['revision'])
+
+
+def test_deleting_all_leads_does_not_reseed():
+    for lead in store.all_leads():
+        store.delete_lead(lead['id'], lead['revision'])
+    store.initialize()
+    assert store.all_leads() == []
+
+
+def test_ui_delete_requires_confirmation():
+    from streamlit.testing.v1 import AppTest
+    from pathlib import Path
+    at = AppTest.from_file(str(Path(__file__).resolve().parents[1] / 'app.py')).run()
+    next(b for b in at.button if b.label == 'Delete lead permanently').click().run()
+    assert len(store.all_leads()) == 25
+    assert any('Confirm the checkbox' in e.value for e in at.error)
+    next(c for c in at.checkbox if c.label.startswith('I understand')).check()
+    next(b for b in at.button if b.label == 'Delete lead permanently').click().run()
+    assert not at.exception
+    assert len(store.all_leads()) == 24
+    assert not any(l['id'] == 3 for l in store.all_leads())

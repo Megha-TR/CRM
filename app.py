@@ -215,6 +215,16 @@ with detail:
         if st.button('Re-analyze this lead', key=f'analyze_{selected}'):
             with st.spinner('Reading lead and conversation…'):
                 perform(lambda: store.reanalyze(selected), 'Agent decision updated.')
+        with st.expander('Delete lead'):
+            st.warning(f'Delete {lead["name"]} at {lead["company"]}? This permanently removes the lead, current draft, and all chat/sent-message history. It cannot be undone.')
+            with st.form(f'delete_{selected}_{lead["revision"]}'):
+                confirm_delete = st.checkbox('I understand this permanently deletes the lead and its messages.')
+                if st.form_submit_button('Delete lead permanently'):
+                    if not confirm_delete:
+                        st.error('Confirm the checkbox before deleting this lead.')
+                    else:
+                        perform(lambda: store.delete_lead(selected, lead['revision']), 'Lead and conversation history deleted.')
+
 
 
 buffer = io.StringIO()
