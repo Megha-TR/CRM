@@ -63,15 +63,16 @@ def open_picked_lead():
         st.session_state.pop('selected_id', None)
 
 
-def refresh(message):
+def refresh(message, level='success'):
     st.session_state['notice'] = message
+    st.session_state['notice_level'] = level
     st.rerun()
 
 
 def perform(action, message):
     try:
-        action()
-        refresh(message)
+        warning = action()
+        refresh(warning, level='warning') if isinstance(warning, str) else refresh(message)
     except ValueError as exc:
         st.error(str(exc))
 
@@ -105,7 +106,9 @@ with st.sidebar:
 st.title('Your next conversation starts here.')
 st.caption(f'{today().strftime("%A, %d/%m/%Y")} · Follow up with the right buyer, at the right time.')
 if 'notice' in st.session_state:
-    st.success(st.session_state.pop('notice'))
+    notice = st.session_state.pop('notice')
+    level = st.session_state.pop('notice_level', 'success')
+    st.warning(notice) if level == 'warning' else st.success(notice)
 filtered = [l for l in leads if (rep == 'All reps' or l['rep'] == rep)
             and (not tag_filter or l['tag'] in tag_filter)
             and (picked_lead is None or l['id'] == picked_lead)]

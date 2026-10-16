@@ -77,14 +77,19 @@ def get_lead(lead_id):
         return dict(row), chats
 
 
-def reanalyze(lead_id):
+def reanalyze(lead_id, preserve_on_failure=True):
     lead, chats = get_lead(lead_id)
     decision, engine, warning = analyze(lead, chats)
     with connect() as con:
         current = con.execute('SELECT revision FROM leads WHERE id=?', (lead_id,)).fetchone()[0]
         if current != lead['revision']:
             raise ValueError('Lead changed in another session. Please retry.')
-        save_decision(con, lead_id, decision, engine, warning)
+        if warning and preserve_on_failure:
+            warning += ' Previous recommendation and draft were kept.'
+            con.execute('UPDATE leads SET warning=?,revision=revision+1 WHERE id=?', (warning, lead_id))
+        else:
+            save_decision(con, lead_id, decision, engine, warning)
+    return warning
 
 
 def add_lead(lead, initial_chat=''):
@@ -92,7 +97,7 @@ def add_lead(lead, initial_chat=''):
         lead_id = insert_lead(con, lead)
         if initial_chat.strip():
             con.execute('INSERT INTO chats(lead_id,sender,body,created_at) VALUES (?,?,?,?)', (lead_id, 'Buyer', initial_chat.strip(), lead['last_contact'] + 'T12:00:00'))
-    reanalyze(lead_id)
+    reanalyze(lead_id, preserve_on_failure=False)
     return lead_id
 
 
@@ -102,7 +107,7 @@ def add_chat(lead_id, sender, body, contact):
     with connect() as con:
         con.execute('INSERT INTO chats(lead_id,sender,body,created_at) VALUES (?,?,?,?)', (lead_id, sender, body.strip(), contact.isoformat() + 'T12:00:00'))
         con.execute('UPDATE leads SET last_contact=MAX(last_contact,?),revision=revision+1 WHERE id=?', (contact.isoformat(), lead_id))
-    reanalyze(lead_id)
+    reanalyze(lead_id, preserve_on_failure=False)
 
 
 def save_draft(lead_id, draft, revision):

@@ -153,5 +153,5 @@ def analyze(lead, chats, current=None):
     except Exception as exc:
         # Expose only safe categories, never keys, response bodies, or provider internals.
         status = getattr(exc, 'status_code', getattr(exc, 'code', None))
-        detail = {429: 'quota or rate limit reached', 401: 'API key rejected', 403: 'API access denied', 404: 'model unavailable'}.get(status, 'request failed or returned an invalid response')
-        return baseline, 'Local fallback', f'{provider.title()} {detail}; saved a local rules decision. Try re-analysis later.'
+        detail = {402: 'prepaid credits are depleted (check the API key project in Google AI Studio)', 429: 'quota or rate limit reached', 401: 'API key rejected', 403: 'API access denied', 404: 'model unavailable'}.get(status, 'request failed or returned an invalid response')
+        return baseline, 'Local fallback', f'{provider.title()} {detail}; a local rules result is available.'

@@ -197,7 +197,8 @@ def test_gemini_invalid_response_falls_back(monkeypatch, response_body):
     assert result.tag == 'Hot' and engine == 'Local fallback' and warning
 
 
-def test_gemini_quota_and_missing_key_do_not_switch_providers(monkeypatch):
+@pytest.mark.parametrize('status, expected', [(429, 'quota'), (402, 'prepaid credits')])
+def test_gemini_quota_and_missing_key_do_not_switch_providers(monkeypatch, status, expected):
     import agent
     from urllib.error import HTTPError
     monkeypatch.setenv('AI_PROVIDER', 'gemini')
@@ -207,10 +208,10 @@ def test_gemini_quota_and_missing_key_do_not_switch_providers(monkeypatch):
     assert engine == 'Local rules' and 'key is missing' in warning
     monkeypatch.setenv('GEMINI_API_KEY', 'fake')
     def quota(*a, **kw):
-        raise HTTPError('https://example.com', 429, 'secret must not appear', {}, None)
+        raise HTTPError('https://example.com', status, 'secret must not appear', {}, None)
     monkeypatch.setattr(agent, 'urlopen', quota)
     result, engine, warning = agent.analyze(lead, chats)
-    assert engine == 'Local fallback' and 'quota' in warning and 'secret' not in warning
+    assert engine == 'Local fallback' and expected in warning and 'secret' not in warning
 
 
 def test_delete_removes_only_selected_lead_and_history():
@@ -280,3 +281,29 @@ def test_deleted_lead_clears_dropdown_selection():
     assert not at.exception
     assert at.selectbox(key='lead_picker').value is None
     assert not any('Aarav Shah' in option for option in at.selectbox(key='lead_picker').options)
+
+
+def test_failed_manual_reanalysis_preserves_saved_work(monkeypatch):
+    import agent
+    lead, chats = store.get_lead(1)
+    store.save_draft(1, 'My carefully edited draft', lead['revision'])
+    before, chats = store.get_lead(1)
+    monkeypatch.setattr(store, 'analyze', lambda *a: (agent.local_decision(before, chats), 'Local fallback', 'Gemini prepaid credits are depleted.'))
+    warning = store.reanalyze(1)
+    after, _ = store.get_lead(1)
+    assert 'were kept' in warning
+    for field in ['draft', 'tag', 'reason', 'engine', 'next_followup']:
+        assert before[field] == after[field]
+    assert after['warning'] == warning
+
+
+def test_ui_failed_reanalysis_shows_warning_instead_of_success(monkeypatch):
+    from streamlit.testing.v1 import AppTest
+    from pathlib import Path
+    import agent
+    monkeypatch.setattr(store, 'analyze', lambda lead, chats: (agent.local_decision(lead, chats), 'Local fallback', 'Gemini prepaid credits are depleted.'))
+    at = AppTest.from_file(str(Path(__file__).resolve().parents[1] / 'app.py')).run()
+    next(b for b in at.button if b.label == 'Re-analyze this lead').click().run()
+    assert not at.exception
+    assert any('prepaid credits' in w.value for w in at.warning)
+    assert not any('Agent decision updated' in s.value for s in at.success)

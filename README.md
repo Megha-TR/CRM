@@ -36,7 +36,7 @@ OpenAI remains supported: set `AI_PROVIDER='openai'`, `OPENAI_API_KEY`, and opti
 
 AI mode sends the selected lead and conversation to the selected provider. Seed creation deliberately uses local rules to avoid 25 API calls; use **Re-analyze this lead** to get an AI decision for a seeded lead. Added leads and chats are analyzed automatically. Live Gemini inference has been verified with fictional sample leads, including re-analysis through the running app. The automated suite additionally tests structured responses and failure handling without consuming API quota.
 
-If AI times out, is blocked, or fails validation, the app persists a local decision and shows a warning. Calls have a 20-second timeout and no retries. No paid call occurs on routine screen reruns or draft edits.
+If AI times out, is blocked, or fails validation, a new lead/chat receives a local decision and a warning. A failed manual Re-analyze preserves the existing recommendation and edited draft instead of overwriting them, and shows a warning rather than a success banner. Calls have a 20-second timeout and no retries. No paid call occurs on routine screen reruns or draft edits.
 
 ## Try the main flow
 
