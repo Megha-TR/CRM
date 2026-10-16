@@ -246,3 +246,37 @@ def test_ui_delete_requires_confirmation():
     assert not at.exception
     assert len(store.all_leads()) == 24
     assert not any(l['id'] == 3 for l in store.all_leads())
+
+
+def test_rep_lead_dropdown_filters_resets_and_opens_upcoming():
+    from streamlit.testing.v1 import AppTest
+    from pathlib import Path
+    at = AppTest.from_file(str(Path(__file__).resolve().parents[1] / 'app.py')).run()
+    assert len(at.selectbox(key='lead_picker').options) == 26  # All option plus 25 leads.
+    at.selectbox(key='rep_filter').select('Asha').run()
+    options = at.selectbox(key='lead_picker').options
+    assert len(options) == 6
+    assert any('Ishita Jain' in option for option in options)
+    assert not any('Diya Patel' in option for option in options)
+    # Ishita is upcoming, so picking her must open the All leads view.
+    at.selectbox(key='lead_picker').select(6).run()
+    assert not at.exception
+    assert any(m.value == '### Ishita Jain' for m in at.markdown)
+    assert any(h.value == 'All leads' for h in at.subheader)
+    at.selectbox(key='rep_filter').select('Rohan').run()
+    assert not at.exception
+    assert at.selectbox(key='lead_picker').value is None
+    assert any('Diya Patel' in option for option in at.selectbox(key='lead_picker').options)
+    assert not any('Ishita Jain' in option for option in at.selectbox(key='lead_picker').options)
+
+
+def test_deleted_lead_clears_dropdown_selection():
+    from streamlit.testing.v1 import AppTest
+    from pathlib import Path
+    at = AppTest.from_file(str(Path(__file__).resolve().parents[1] / 'app.py')).run()
+    at.selectbox(key='lead_picker').select(1).run()
+    next(c for c in at.checkbox if c.label.startswith('I understand')).check()
+    next(b for b in at.button if b.label == 'Delete lead permanently').click().run()
+    assert not at.exception
+    assert at.selectbox(key='lead_picker').value is None
+    assert not any('Aarav Shah' in option for option in at.selectbox(key='lead_picker').options)

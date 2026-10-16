@@ -48,6 +48,10 @@ If AI times out, is blocked, or fails validation, the app persists a local decis
 6. To remove a lead, open **Delete lead** in its workspace, read the warning, check the confirmation, and click **Delete lead permanently**. This removes its draft and all messages together.
 7. Restart the app: drafts, new leads, and sent history remain in SQLite. CSV export provides a readable lead snapshot.
 
+## Finding a rep’s leads
+
+Choose a Sales rep, then open the searchable **Search leads** dropdown. It lists only that rep’s leads, with buyer, company, and phone. Type to narrow the choices. Picking a lead opens its workspace in All leads view, including upcoming or paused leads; switching reps clears the old choice. Choose **All leads for this rep** to remove the individual lead filter.
+
 ## Dashboard cards and colors
 
 Click a summary card to filter the lead queue and workspace: **Due now** includes today and overdue; **Overdue** includes only dates before today; **Hot leads** includes active Hot leads; **Active leads** includes every lead whose outreach is not paused. Sidebar filters apply to all four counts. **Show all leads** includes paused leads too. The total and temperature legend show the full database counts. Hot badges and card borders are red, Warm yellow, and Cold blue; text labels remain visible so color is not the only signal.

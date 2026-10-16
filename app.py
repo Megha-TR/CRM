@@ -47,6 +47,22 @@ def choose_view(view):
     st.session_state.pop('selected_id', None)
 
 
+def reset_rep_selection():
+    st.session_state['lead_picker'] = None
+    st.session_state.pop('selected_id', None)
+    st.session_state['lead_view'] = 'Due now'
+
+
+def open_picked_lead():
+    lead_id = st.session_state.get('lead_picker')
+    if lead_id is not None:
+        st.session_state['selected_id'] = lead_id
+        st.session_state['lead_view'] = 'All leads'
+        st.session_state['temperature_filter'] = []
+    else:
+        st.session_state.pop('selected_id', None)
+
+
 def refresh(message):
     st.session_state['notice'] = message
     st.rerun()
@@ -60,12 +76,24 @@ def perform(action, message):
         st.error(str(exc))
 
 
+leads = store.all_leads()
+
 with st.sidebar:
     st.markdown('## ◉ FollowUp')
     st.caption('PACKAGING EQUIPMENT · SALES DESK')
-    rep = st.selectbox('Sales rep', ['All reps'] + REPS)
-    search = st.text_input('Search leads', placeholder='Name, company or phone')
-    tag_filter = st.multiselect('Temperature', ['Hot', 'Warm', 'Cold'], format_func=lambda tag: f'{COLORS[tag]} {tag}')
+    rep = st.selectbox('Sales rep', ['All reps'] + REPS, key='rep_filter', on_change=reset_rep_selection)
+    rep_leads = sorted([l for l in leads if rep == 'All reps' or l['rep'] == rep], key=lambda l: (l['name'].casefold(), l['company'].casefold(), l['id']))
+    lead_options = {l['id']: l for l in rep_leads}
+    if st.session_state.get('lead_picker') not in lead_options:
+        st.session_state['lead_picker'] = None
+    picked_lead = st.selectbox(
+        'Search leads', [None] + list(lead_options), key='lead_picker',
+        format_func=lambda lead_id: 'All leads for this rep' if lead_id is None else f'{lead_options[lead_id]["name"]} · {lead_options[lead_id]["company"]} · {lead_options[lead_id]["phone"]}',
+        on_change=open_picked_lead,
+        help='Open the dropdown and type a name, company, or phone. Only the selected rep’s leads are listed.',
+    )
+    st.caption(f'{len(rep_leads)} leads available for {rep.lower() if rep == "All reps" else rep}.')
+    tag_filter = st.multiselect('Temperature', ['Hot', 'Warm', 'Cold'], key='temperature_filter', format_func=lambda tag: f'{COLORS[tag]} {tag}')
     st.divider()
     st.caption('AI mode')
     provider, api_key, _ = provider_settings()
@@ -78,10 +106,9 @@ st.title('Your next conversation starts here.')
 st.caption(f'{today().strftime("%A, %d/%m/%Y")} · Follow up with the right buyer, at the right time.')
 if 'notice' in st.session_state:
     st.success(st.session_state.pop('notice'))
-leads = store.all_leads()
 filtered = [l for l in leads if (rep == 'All reps' or l['rep'] == rep)
             and (not tag_filter or l['tag'] in tag_filter)
-            and (not search or search.lower() in ' '.join([l['name'], l['company'], l['phone']]).lower())]
+            and (picked_lead is None or l['id'] == picked_lead)]
 active = [l for l in filtered if not l['paused']]
 today_str = today().isoformat()
 due = [l for l in active if l['next_followup'] <= today_str]
