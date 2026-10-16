@@ -1,0 +1,26 @@
+id,name,company,phone,source,rep,last_contact
+1,Aarav Shah,FreshBox Foods,+91 00000 00000,Excel,Asha,2026-10-12
+2,Diya Patel,GreenLeaf Tea,+91 00000 00001,WhatsApp,Rohan,2026-10-15
+3,Kabir Rao,SpiceRoute Foods,+91 00000 00002,Referral,Meera,2026-10-09
+4,Ananya Iyer,PureDrop Water,+91 00000 00003,Website,Vikram,2026-10-14
+5,Arjun Das,NutriPack,+91 00000 00004,Excel,Neha,2026-10-11
+6,Ishita Jain,HerbalNest,+91 00000 00005,WhatsApp,Asha,2026-10-15
+7,Vihaan Nair,CrispBite Snacks,+91 00000 00006,Referral,Rohan,2026-10-08
+8,Saanvi Roy,DairyDay,+91 00000 00007,Website,Meera,2026-10-14
+9,Reyansh Mehta,GoodGrain,+91 00000 00008,Excel,Vikram,2026-10-13
+10,Myra Kapoor,Bloom Cosmetics,+91 00000 00009,WhatsApp,Neha,2026-09-18
+11,Advik Singh,Metro Staples,+91 00000 00010,Referral,Asha,2026-09-11
+12,Kiara Verma,DailyHarvest,+91 00000 00011,Website,Rohan,2026-10-14
+13,Ayaan Gupta,Sunrise Bakery,+91 00000 00012,Excel,Meera,2026-10-15
+14,Pari Joshi,OceanSalt,+91 00000 00013,WhatsApp,Vikram,2026-10-06
+15,Rudra Bose,EcoWrap,+91 00000 00014,Referral,Neha,2026-10-10
+16,Tara Menon,GoldenBeans,+91 00000 00015,Website,Asha,2026-09-24
+17,Vivaan Sethi,PouchCraft,+91 00000 00016,Excel,Rohan,2026-10-15
+18,Avni Kulkarni,FarmPure,+91 00000 00017,WhatsApp,Meera,2026-10-04
+19,Dhruv Reddy,SnackLab,+91 00000 00018,Referral,Vikram,2026-10-11
+20,Nisha Bhat,WellnessRoots,+91 00000 00019,Website,Neha,2026-09-06
+21,Om Desai,QuickPack,+91 00000 00020,Excel,Asha,2026-10-13
+22,Riya Sen,ChocoCraft,+91 00000 00021,WhatsApp,Rohan,2026-10-15
+23,Yash Malhotra,HarvestHub,+91 00000 00022,Referral,Meera,2026-09-28
+24,Sara Ali,PetMeal,+91 00000 00023,Website,Vikram,2026-09-16
+25,Dev Arora,UrbanGrind,+91 00000 00024,Excel,Neha,2026-10-14

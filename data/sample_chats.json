@@ -1,0 +1,377 @@
+[
+  {
+    "lead_id": 1,
+    "messages": [
+      {
+        "sender": "Rep",
+        "body": "Hi Aarav, thanks for your interest in our packaging equipment. What does FreshBox Foods need?",
+        "created_at": "2026-10-12T10:00:00"
+      },
+      {
+        "sender": "Buyer",
+        "body": "Please send a quotation for a pouch packing machine. We need it urgently.",
+        "created_at": "2026-10-12T10:05:00"
+      }
+    ]
+  },
+  {
+    "lead_id": 2,
+    "messages": [
+      {
+        "sender": "Rep",
+        "body": "Hi Diya, thanks for your interest in our packaging equipment. What does GreenLeaf Tea need?",
+        "created_at": "2026-10-15T10:00:00"
+      },
+      {
+        "sender": "Buyer",
+        "body": "Can we schedule a demo today? We pack 200g tea pouches.",
+        "created_at": "2026-10-15T10:05:00"
+      }
+    ]
+  },
+  {
+    "lead_id": 3,
+    "messages": [
+      {
+        "sender": "Rep",
+        "body": "Hi Kabir, thanks for your interest in our packaging equipment. What does SpiceRoute Foods need?",
+        "created_at": "2026-10-09T10:00:00"
+      },
+      {
+        "sender": "Buyer",
+        "body": "We are ready to buy. What do you need for the purchase order?",
+        "created_at": "2026-10-09T10:05:00"
+      }
+    ]
+  },
+  {
+    "lead_id": 4,
+    "messages": [
+      {
+        "sender": "Rep",
+        "body": "Hi Ananya, thanks for your interest in our packaging equipment. What does PureDrop Water need?",
+        "created_at": "2026-10-14T10:00:00"
+      },
+      {
+        "sender": "Buyer",
+        "body": "We are comparing suppliers. Can you share pricing?",
+        "created_at": "2026-10-14T10:05:00"
+      }
+    ]
+  },
+  {
+    "lead_id": 5,
+    "messages": [
+      {
+        "sender": "Rep",
+        "body": "Hi Arjun, thanks for your interest in our packaging equipment. What does NutriPack need?",
+        "created_at": "2026-10-11T10:00:00"
+      },
+      {
+        "sender": "Buyer",
+        "body": "We have budget approval. Please send a quote.",
+        "created_at": "2026-10-11T10:05:00"
+      }
+    ]
+  },
+  {
+    "lead_id": 6,
+    "messages": [
+      {
+        "sender": "Rep",
+        "body": "Hi Ishita, thanks for your interest in our packaging equipment. What does HerbalNest need?",
+        "created_at": "2026-10-15T10:00:00"
+      },
+      {
+        "sender": "Buyer",
+        "body": "Please follow up next month. Budget is still pending.",
+        "created_at": "2026-10-15T10:05:00"
+      }
+    ]
+  },
+  {
+    "lead_id": 7,
+    "messages": [
+      {
+        "sender": "Rep",
+        "body": "Hi Vihaan, thanks for your interest in our packaging equipment. What does CrispBite Snacks need?",
+        "created_at": "2026-10-08T10:00:00"
+      },
+      {
+        "sender": "Buyer",
+        "body": "Interested, but we need to hold until the budget review.",
+        "created_at": "2026-10-08T10:05:00"
+      }
+    ]
+  },
+  {
+    "lead_id": 8,
+    "messages": [
+      {
+        "sender": "Rep",
+        "body": "Hi Saanvi, thanks for your interest in our packaging equipment. What does DairyDay need?",
+        "created_at": "2026-10-14T10:00:00"
+      },
+      {
+        "sender": "Buyer",
+        "body": "Can your equipment handle 500g packs? We are exploring options.",
+        "created_at": "2026-10-14T10:05:00"
+      }
+    ]
+  },
+  {
+    "lead_id": 9,
+    "messages": [
+      {
+        "sender": "Rep",
+        "body": "Hi Reyansh, thanks for your interest in our packaging equipment. What does GoodGrain need?",
+        "created_at": "2026-10-13T10:00:00"
+      },
+      {
+        "sender": "Buyer",
+        "body": "We pack flour in 1kg bags. Happy to discuss our requirements.",
+        "created_at": "2026-10-13T10:05:00"
+      }
+    ]
+  },
+  {
+    "lead_id": 10,
+    "messages": [
+      {
+        "sender": "Rep",
+        "body": "Hi Myra, thanks for your interest in our packaging equipment. What does Bloom Cosmetics need?",
+        "created_at": "2026-09-18T10:00:00"
+      },
+      {
+        "sender": "Buyer",
+        "body": "Thanks for the catalogue. We will review it.",
+        "created_at": "2026-09-18T10:05:00"
+      }
+    ]
+  },
+  {
+    "lead_id": 11,
+    "messages": [
+      {
+        "sender": "Rep",
+        "body": "Hi Advik, thanks for your interest in our packaging equipment. What does Metro Staples need?",
+        "created_at": "2026-09-11T10:00:00"
+      },
+      {
+        "sender": "Buyer",
+        "body": "Received, thank you.",
+        "created_at": "2026-09-11T10:05:00"
+      }
+    ]
+  },
+  {
+    "lead_id": 12,
+    "messages": [
+      {
+        "sender": "Rep",
+        "body": "Hi Kiara, thanks for your interest in our packaging equipment. What does DailyHarvest need?",
+        "created_at": "2026-10-14T10:00:00"
+      },
+      {
+        "sender": "Buyer",
+        "body": "Not interested. Please do not contact us again.",
+        "created_at": "2026-10-14T10:05:00"
+      }
+    ]
+  },
+  {
+    "lead_id": 13,
+    "messages": [
+      {
+        "sender": "Rep",
+        "body": "Hi Ayaan, thanks for your interest in our packaging equipment. What does Sunrise Bakery need?",
+        "created_at": "2026-10-15T10:00:00"
+      },
+      {
+        "sender": "Buyer",
+        "body": "Please schedule a demo tomorrow.",
+        "created_at": "2026-10-15T10:05:00"
+      }
+    ]
+  },
+  {
+    "lead_id": 14,
+    "messages": [
+      {
+        "sender": "Rep",
+        "body": "Hi Pari, thanks for your interest in our packaging equipment. What does OceanSalt need?",
+        "created_at": "2026-10-06T10:00:00"
+      },
+      {
+        "sender": "Buyer",
+        "body": "Please check in next week after our production meeting.",
+        "created_at": "2026-10-06T10:05:00"
+      }
+    ]
+  },
+  {
+    "lead_id": 15,
+    "messages": [
+      {
+        "sender": "Rep",
+        "body": "Hi Rudra, thanks for your interest in our packaging equipment. What does EcoWrap need?",
+        "created_at": "2026-10-10T10:00:00"
+      },
+      {
+        "sender": "Buyer",
+        "body": "We want to place an order. Can we discuss configuration?",
+        "created_at": "2026-10-10T10:05:00"
+      }
+    ]
+  },
+  {
+    "lead_id": 16,
+    "messages": [
+      {
+        "sender": "Rep",
+        "body": "Hi Tara, thanks for your interest in our packaging equipment. What does GoldenBeans need?",
+        "created_at": "2026-09-24T10:00:00"
+      },
+      {
+        "sender": "Buyer",
+        "body": "We already purchased from another vendor.",
+        "created_at": "2026-09-24T10:05:00"
+      }
+    ]
+  },
+  {
+    "lead_id": 17,
+    "messages": [
+      {
+        "sender": "Rep",
+        "body": "Hi Vivaan, thanks for your interest in our packaging equipment. What does PouchCraft need?",
+        "created_at": "2026-10-15T10:00:00"
+      },
+      {
+        "sender": "Buyer",
+        "body": "Please share pricing for the sealing machine.",
+        "created_at": "2026-10-15T10:05:00"
+      }
+    ]
+  },
+  {
+    "lead_id": 18,
+    "messages": [
+      {
+        "sender": "Rep",
+        "body": "Hi Avni, thanks for your interest in our packaging equipment. What does FarmPure need?",
+        "created_at": "2026-10-04T10:00:00"
+      },
+      {
+        "sender": "Buyer",
+        "body": "The budget is delayed. Please call next quarter.",
+        "created_at": "2026-10-04T10:05:00"
+      }
+    ]
+  },
+  {
+    "lead_id": 19,
+    "messages": [
+      {
+        "sender": "Rep",
+        "body": "Hi Dhruv, thanks for your interest in our packaging equipment. What does SnackLab need?",
+        "created_at": "2026-10-11T10:00:00"
+      },
+      {
+        "sender": "Buyer",
+        "body": "Could you explain the available packing formats?",
+        "created_at": "2026-10-11T10:05:00"
+      }
+    ]
+  },
+  {
+    "lead_id": 20,
+    "messages": [
+      {
+        "sender": "Rep",
+        "body": "Hi Nisha, thanks for your interest in our packaging equipment. What does WellnessRoots need?",
+        "created_at": "2026-09-06T10:00:00"
+      },
+      {
+        "sender": "Buyer",
+        "body": "I will get back to you.",
+        "created_at": "2026-09-06T10:05:00"
+      }
+    ]
+  },
+  {
+    "lead_id": 21,
+    "messages": [
+      {
+        "sender": "Rep",
+        "body": "Hi Om, thanks for your interest in our packaging equipment. What does QuickPack need?",
+        "created_at": "2026-10-13T10:00:00"
+      },
+      {
+        "sender": "Buyer",
+        "body": "We need a demo for our new production line.",
+        "created_at": "2026-10-13T10:05:00"
+      }
+    ]
+  },
+  {
+    "lead_id": 22,
+    "messages": [
+      {
+        "sender": "Rep",
+        "body": "Hi Riya, thanks for your interest in our packaging equipment. What does ChocoCraft need?",
+        "created_at": "2026-10-15T10:00:00"
+      },
+      {
+        "sender": "Buyer",
+        "body": "We need to discuss requirements with our operations team.",
+        "created_at": "2026-10-15T10:05:00"
+      }
+    ]
+  },
+  {
+    "lead_id": 23,
+    "messages": [
+      {
+        "sender": "Rep",
+        "body": "Hi Yash, thanks for your interest in our packaging equipment. What does HarvestHub need?",
+        "created_at": "2026-09-28T10:00:00"
+      },
+      {
+        "sender": "Buyer",
+        "body": "Budget is pending; can you check later?",
+        "created_at": "2026-09-28T10:05:00"
+      }
+    ]
+  },
+  {
+    "lead_id": 24,
+    "messages": [
+      {
+        "sender": "Rep",
+        "body": "Hi Sara, thanks for your interest in our packaging equipment. What does PetMeal need?",
+        "created_at": "2026-09-16T10:00:00"
+      },
+      {
+        "sender": "Buyer",
+        "body": "Thanks for reaching out.",
+        "created_at": "2026-09-16T10:05:00"
+      }
+    ]
+  },
+  {
+    "lead_id": 25,
+    "messages": [
+      {
+        "sender": "Rep",
+        "body": "Hi Dev, thanks for your interest in our packaging equipment. What does UrbanGrind need?",
+        "created_at": "2026-10-14T10:00:00"
+      },
+      {
+        "sender": "Buyer",
+        "body": "Please send a quotation for coffee pouch packaging.",
+        "created_at": "2026-10-14T10:05:00"
+      }
+    ]
+  }
+]
