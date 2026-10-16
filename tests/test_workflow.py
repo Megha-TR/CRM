@@ -7,6 +7,8 @@ from agent import local_decision, today
 def isolated(tmp_path, monkeypatch):
     monkeypatch.setenv('CRM_DB_PATH', str(tmp_path / 'crm.db'))
     monkeypatch.delenv('OPENAI_API_KEY', raising=False)
+    monkeypatch.delenv('GEMINI_API_KEY', raising=False)
+    monkeypatch.delenv('AI_PROVIDER', raising=False)
     store.initialize()
 
 
@@ -151,3 +153,61 @@ def test_summary_cards_filter_queue_and_detail():
     assert len([b for b in at.button if b.key and b.key.startswith('open_')]) == 25
     badges = ' '.join(m.value for m in at.markdown)
     assert all(f'temperature-{tag}' in badges for tag in ['hot', 'warm', 'cold'])
+
+
+def test_gemini_structured_response_and_provider_selection(monkeypatch):
+    import io
+    import json
+    import agent
+    calls = []
+    decision = dict(tag='Hot', reason='Buyer requested a quote.', next_followup=today().isoformat(), draft='Hi Aarav, what output does your line need?', paused=False)
+    def respond(request, timeout):
+        calls.append((request, timeout))
+        return io.BytesIO(json.dumps({'candidates': [{'finishReason': 'STOP', 'content': {'parts': [{'text': json.dumps(decision)}]}}]}).encode())
+    monkeypatch.setenv('AI_PROVIDER', 'gemini')
+    monkeypatch.setenv('GEMINI_API_KEY', 'fake-gemini-key')
+    monkeypatch.setenv('OPENAI_API_KEY', 'unused-openai-key')
+    monkeypatch.setattr(agent, 'urlopen', respond)
+    lead, chats = store.get_lead(1)
+    result, engine, warning = agent.analyze(lead, chats)
+    assert engine == 'Gemini' and not warning and result.tag == 'Hot'
+    request, timeout = calls[0]
+    assert request.headers['X-goog-api-key'] == 'fake-gemini-key'
+    assert 'fake-gemini-key' not in request.full_url
+    body = json.loads(request.data)
+    assert 'FreshBox Foods' in body['contents'][0]['parts'][0]['text']
+    assert body['generationConfig']['responseMimeType'] == 'application/json'
+    assert timeout == 20
+
+
+@pytest.mark.parametrize('response_body', [
+    {'candidates': [{'finishReason': 'MAX_TOKENS'}]},
+    {'candidates': []},
+    {'candidates': [{'finishReason': 'STOP', 'content': {'parts': [{'text': '{invalid'}]}}]},
+])
+def test_gemini_invalid_response_falls_back(monkeypatch, response_body):
+    import io
+    import json
+    import agent
+    monkeypatch.setenv('AI_PROVIDER', 'gemini')
+    monkeypatch.setenv('GEMINI_API_KEY', 'fake')
+    monkeypatch.setattr(agent, 'urlopen', lambda *a, **kw: io.BytesIO(json.dumps(response_body).encode()))
+    lead, chats = store.get_lead(1)
+    result, engine, warning = agent.analyze(lead, chats)
+    assert result.tag == 'Hot' and engine == 'Local fallback' and warning
+
+
+def test_gemini_quota_and_missing_key_do_not_switch_providers(monkeypatch):
+    import agent
+    from urllib.error import HTTPError
+    monkeypatch.setenv('AI_PROVIDER', 'gemini')
+    monkeypatch.setenv('OPENAI_API_KEY', 'unused-openai-key')
+    lead, chats = store.get_lead(1)
+    result, engine, warning = agent.analyze(lead, chats)
+    assert engine == 'Local rules' and 'key is missing' in warning
+    monkeypatch.setenv('GEMINI_API_KEY', 'fake')
+    def quota(*a, **kw):
+        raise HTTPError('https://example.com', 429, 'secret must not appear', {}, None)
+    monkeypatch.setattr(agent, 'urlopen', quota)
+    result, engine, warning = agent.analyze(lead, chats)
+    assert engine == 'Local fallback' and 'quota' in warning and 'secret' not in warning

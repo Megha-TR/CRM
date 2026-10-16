@@ -3,7 +3,7 @@ import io
 import os
 from datetime import date
 import streamlit as st
-from agent import today
+from agent import today, provider_settings
 from sample_data import REPS
 import store
 
@@ -60,7 +60,8 @@ with st.sidebar:
     tag_filter = st.multiselect('Temperature', ['Hot', 'Warm', 'Cold'], format_func=lambda tag: f'{COLORS[tag]} {tag}')
     st.divider()
     st.caption('AI mode')
-    st.write('OpenAI enabled' if os.getenv('OPENAI_API_KEY') else 'Local rules · no API key')
+    provider, api_key, _ = provider_settings()
+    st.write(f'{provider.title()} configured' if api_key else 'Local rules · no API key')
     st.caption('Each lead shows which engine generated its decision. AI runs on new leads, new chats, and re-analysis. Sample data starts with local decisions.')
     st.caption('Dates use Asia/Kolkata. Data persists in local SQLite.')
     st.caption('Demo data is fictional. No messages are actually sent.')

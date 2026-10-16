@@ -4,3 +4,4 @@ __pycache__/
 data/*.db*
 .env
 .streamlit/secrets.toml
+data/dashboard-preview.png

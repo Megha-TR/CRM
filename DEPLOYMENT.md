@@ -1,11 +1,11 @@
 # Publishing checklist
 
-The app works locally. Publishing has not been completed. A live OpenAI call was attempted but rejected for exhausted API credits; successful inference still needs verification.
+The app works locally. Publishing has not been completed. OpenAI was rejected for exhausted credits. Gemini is now the configured provider; a live Gemini request still needs verification.
 
 ## Before sharing with the company
 
-- Configure an OpenAI API key through local `.streamlit/secrets.toml` (see the example) or the host's secret environment variables. Never put the key in Git or send it in chat.
-- Re-analyze a seeded lead, then add a buyer message. Verify that the decision says **OpenAI**, not **Local rules** or **Local fallback**, and inspect tag, reason, date, and draft.
+- Configure a Gemini API key through local `.streamlit/secrets.toml` (see the example) or the host's secret environment variables. Never put the key in Git or send it in chat.
+- Re-analyze a seeded lead, then add a buyer message. Verify that the decision says **Gemini**, not **Local rules** or **Local fallback**, and inspect tag, reason, date, and draft.
 - Push the source to the intended GitHub account and provide reviewer access.
 - Deploy to a single app instance with a writable persistent disk mounted at `/app/data`. Configure `CRM_DB_PATH=/app/data/crm.db` and the AI key on the host. The Dockerfile is prepared for this arrangement; it has not yet been built or run here.
 - Confirm the public URL opens from a fresh browser, run the full rep workflow, restart the hosted service, and verify the saved lead/message remains.
@@ -22,7 +22,7 @@ Streamlit Community Cloud is a simple demo host, but its local filesystem is not
 ```bash
 docker build -t followup .
 docker volume create followup-data
-docker run --rm -p 8501:8501 --mount source=followup-data,target=/app/data --env OPENAI_API_KEY followup
+docker run --rm -p 8501:8501 --mount source=followup-data,target=/app/data --env AI_PROVIDER=gemini --env GEMINI_API_KEY followup
 ```
 
 Export the key in your own terminal beforehand. The named volume preserves the database. No key is stored in the image. Use one running instance for this SQLite setup.

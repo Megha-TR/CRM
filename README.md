@@ -17,19 +17,26 @@ python -m streamlit run app.py
 
 Open http://localhost:8501. On this machine the dependencies are already installed, so `python3 -m streamlit run app.py` is sufficient. First launch seeds 25 fictional leads, five rep owners, and 25 two-message WhatsApp-style conversations. Dates are relative to that first launch. All phone numbers are intentionally dummy numbers.
 
-## Optional AI mode
+## AI mode: Gemini (or optional OpenAI)
 
-The entire workflow runs without credentials using local rules. **Local mode is deterministic automation, not an LLM.** For actual model-based reasoning and tailored drafts, supply your own OpenAI API key before starting the server:
+The entire workflow runs without credentials using local rules. **Local mode is deterministic automation, not an LLM.** Gemini is the configured provider for this project. To enable actual model reasoning, copy `.streamlit/secrets.example.toml` to `.streamlit/secrets.toml`, fill in `GEMINI_API_KEY`, and restart Streamlit. Keep real keys out of Git and chat. Streamlit reads root-level secrets into the app environment.
+
+Alternatively configure environment variables before starting:
 
 ```bash
-export OPENAI_API_KEY='your-key-here'
-export OPENAI_MODEL='gpt-4.1-mini'
+export AI_PROVIDER='gemini'
+export GEMINI_API_KEY='your-key-here'
+export GEMINI_MODEL='gemini-2.5-flash'
 python -m streamlit run app.py
 ```
 
-Never commit the key. The app does not read `.env` automatically. It uses the OpenAI Responses API with a Pydantic structured output schema ([official documentation](https://developers.openai.com/api/docs/guides/structured-outputs)). Model access and API billing depend on your account. AI mode sends the selected lead and conversation to OpenAI. Seed creation deliberately uses local rules to avoid 25 API calls; use **Re-analyze this lead** to get an AI decision for a seeded lead. Added leads and chats are analyzed automatically. A live API request was attempted with a configured key, but the provider returned insufficient quota (exhausted credits). Successful live inference remains unverified; failure fallback and structured-response integration are tested with mocks.
+Get a key from [Google AI Studio](https://aistudio.google.com/apikey). Gemini uses Google's Generate Content REST API with a JSON response schema, followed by Pydantic validation ([official documentation](https://ai.google.dev/gemini-api/docs/generate-content/structured-output)). No extra Google SDK dependency is needed. Model access and quota depend on your account; free availability is not guaranteed.
 
-If AI times out, refuses, or fails validation, the app persists a local decision and shows an explicit warning. Calls have a 20-second timeout and no retries. No paid call occurs on routine screen reruns or draft edits.
+OpenAI remains supported: set `AI_PROVIDER='openai'`, `OPENAI_API_KEY`, and optionally `OPENAI_MODEL` (default `gpt-4.1-mini`). It uses the Responses API with structured output. If `AI_PROVIDER` is omitted or `auto`, a nonempty Gemini key takes priority, then OpenAI. Explicit provider selection never silently switches to another paid provider.
+
+AI mode sends the selected lead and conversation to the selected provider. Seed creation deliberately uses local rules to avoid 25 API calls; use **Re-analyze this lead** to get an AI decision for a seeded lead. Added leads and chats are analyzed automatically. A live OpenAI request was rejected for exhausted credits. Gemini success is tested with mocked structured responses; a live Gemini request still needs a configured key and verification.
+
+If AI times out, is blocked, or fails validation, the app persists a local decision and shows a warning. Calls have a 20-second timeout and no retries. No paid call occurs on routine screen reruns or draft edits.
 
 ## Try the main flow
 
@@ -46,7 +53,7 @@ Click a summary card to filter the lead queue and workspace: **Due now** include
 
 ## How the agent works
 
-- `agent.py`: decision schema, local policy, optional OpenAI call, and visible failure fallback.
+- `agent.py`: decision schema, local policy, Gemini/OpenAI calls, and visible failure fallback.
 - `store.py`: SQLite schema, seed, read/write transactions, and revision checks against stale edits.
 - `sample_data.py`: fictional lead and conversation fixtures.
 - `app.py`: one-screen due queue, filters, lead detail, chat entry, draft editor, and new lead form.
