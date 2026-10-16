@@ -14,6 +14,10 @@ st.markdown('''<style>
 .st-key-summary_cards button{min-height:100px;background:white;border:1px solid #d9e2ed;text-align:left}
 .st-key-summary_cards button p{white-space:pre-line;font-size:20px;font-weight:600}
 .st-key-summary_cards button[kind="primary"]{background:#0f766e;color:white;border-color:#0f766e}
+.st-key-summary_cards .st-key-view_Overdue button{background:#dc2626;color:white;border-color:#dc2626}
+.st-key-summary_cards .st-key-view_Overdue button:hover{background:#b91c1c;color:white;border-color:#b91c1c}
+.st-key-summary_cards .st-key-view_Overdue button[kind="primary"]{background:#991b1b;color:white;border-color:#991b1b}
+.st-key-summary_cards .st-key-view_Overdue button:focus-visible{outline:3px solid #fca5a5;outline-offset:2px}
 .temperature{display:inline-block;padding:4px 12px;border-radius:20px;font-weight:700;font-size:14px;margin:4px 0 8px}
 .temperature-hot{color:#b91c1c;background:#fee2e2;border:1px solid #fca5a5}
 .temperature-warm{color:#854d0e;background:#fef9c3;border:1px solid #facc15}
